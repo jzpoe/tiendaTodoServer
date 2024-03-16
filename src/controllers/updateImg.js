@@ -5,14 +5,22 @@ const Image = require("../model/modeImg");
 const uploadImg = async (req, res) => {
   try {
     const { description } = req.body; // Obtener la descripción desde el cuerpo de la solicitud
-    const { path } = req.file; // Obtener la ruta de la imagen subida
+    let imageUrl = req.file.path; // Obtener la ruta de la imagen subida
+
 
     console.log('Descripción de la imagen:', description);
-    console.log('Ruta de la imagen:', path);
+
+    // Si la imagen se redimensionó correctamente, actualizar la URL de la imagen
+    // if (req.file.path !== req.file.destination) {
+    //   imageUrl = req.file.destination.replace(uploadDir, '') + '/resized/' + req.file.filename;
+    // }
+
 
     const newImage = new Image({
       description: description,
-      imageUrl: path, // Utiliza 'path' directamente para la URL de la imagen
+      imageUrl: imageUrl, // Utiliza 'path' directamente para la URL de la imagen
+      size: req.file.size // Añade el tamaño de la imagen si lo necesitas
+
     });
     await newImage.save();
 
